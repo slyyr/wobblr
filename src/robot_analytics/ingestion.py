@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # function to loading the csv data
 def load_sensor_data(file_path):
@@ -68,3 +69,23 @@ if __name__ == "__main__":
     print("STD acceleration:", df["linear_acceleration"].std())
     print("Min acceleration:", df["linear_acceleration"].min())
     print("Max acceleration:", df["linear_acceleration"].max())
+
+    # some properties of acceleration to be checked
+
+    print("acceleration qantiles:")
+    print(df["linear_acceleration"].quantile([0.01, 0.05, 0.50, 0.95, 0.99]))
+
+    print("\nExtreme acceleration:")
+    print(df["linear_acceleration"].abs().nlargest(10))
+
+    print("\nMissing acceleration values:")
+    print(df["linear_acceleration"].isnull().sum())
+
+
+    # using matplotlib for plotting the graph of values
+
+    plt.plot(df["timestamp"], df["linear_acceleration"], color="green")
+    plt.xlabel("Time", color="red", fontweight="bold")
+    plt.ylabel("Linear acceleration (m/s²)", color="red", fontweight="bold")
+    plt.title("Raw Linear Acceleration", color="red", fontweight="bold", fontsize=15)
+    plt.show()
