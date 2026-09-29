@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 # function to loading the csv data
 def load_sensor_data(file_path):
@@ -98,10 +99,19 @@ if __name__ == "__main__":
     ax1.set_xlabel("Time (s)")
     ax1.set_ylabel("Linear velocity (m/s)")
 
-    # cloning one of the subplot and adding it with ax1 plot
+    # creating a second y-axis sharing same x-axis
     ax2 = ax1.twinx()
     ax2.plot(df["timestamp"], df["linear_acceleration"],color="red")
     ax2.set_ylabel("Linear acceleration (m/s²)")
 
     plt.title("Velocity and Acceleration")
     plt.show()
+
+    # Pandas Series/DataFrame --> NumPy ndarray
+
+    accel = df["linear_acceleration"].dropna().to_numpy()
+    dt = df["timestamp"].diff().median()
+    n = len(accel)
+
+    frequencies = np.fft.rfftfreq(n, d=dt)
+    spectrum = np.abs(np.fft.rfft(accel))
