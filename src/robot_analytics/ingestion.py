@@ -1,5 +1,6 @@
 import pandas as pd
 
+# function to loading the csv data
 def load_sensor_data(file_path):
     data = pd.read_csv(file_path)
     return data
@@ -7,12 +8,15 @@ def load_sensor_data(file_path):
 if __name__ == "__main__":
     df = load_sensor_data("../../data/raw/sensor_data.csv")
 
+    # checking for missing values
     print("Missing values:")
     print(df.isnull().sum())
 
+    # checking for duplicate rows
     print("\nDuplicate rows:")
     print(df.duplicated().sum())
 
+    # checking other details
     dt = df["timestamp"].diff()
     print("\nTime difference:")
 
@@ -53,3 +57,14 @@ if __name__ == "__main__":
     print(f"Mean of angular velocity : {df['angular_velocity'].mean()}")
     print(f"Max of angular velocity : {df['angular_velocity'].abs().max()}")
     print(f"STD of angular velocity : {df['angular_velocity'].std()}")
+
+    # to find linear acceleration
+
+    df["linear_acceleration"] = df['linear_velocity'].diff() / df["timestamp"].diff()
+
+    # four statistics of linear acceleration
+
+    print("Mean acceleration:", df["linear_acceleration"].mean())
+    print("STD acceleration:", df["linear_acceleration"].std())
+    print("Min acceleration:", df["linear_acceleration"].min())
+    print("Max acceleration:", df["linear_acceleration"].max())
