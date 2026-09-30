@@ -116,6 +116,8 @@ if __name__ == "__main__":
     frequencies = np.fft.rfftfreq(n, d=dt)
     spectrum = np.abs(np.fft.rfft(accel))
 
+    # plotting the frequency - spectrum graph
+
     plt.plot(frequencies, spectrum) 
     plt.xlabel("Frequency")
     plt.ylabel("Spectrum")
