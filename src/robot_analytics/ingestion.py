@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.signal import butter, filtfilt
 
 # function to loading the csv data
 def load_sensor_data(file_path):
@@ -108,8 +109,8 @@ if __name__ == "__main__":
     plt.show()
 
     # Pandas Series/DataFrame --> NumPy ndarray
-
     accel = df["linear_acceleration"].dropna().to_numpy()
+    accel = accel - accel.mean()
     dt = df["timestamp"].diff().median()
     n = len(accel)
 
@@ -123,3 +124,31 @@ if __name__ == "__main__":
     plt.ylabel("Spectrum")
     plt.title("Frequency - Spectrum Graph")
     plt.show()
+
+    # cutting of the nosiy part
+
+    fs = 1/dt
+    cutoff = 5
+    order = 4
+
+    b, a = butter(
+        order,
+        cutoff,
+        btype="lowpass",
+        fs=fs
+    )
+
+    filtered_acceleration = filtfilt(
+        b,
+        a,
+        accel
+    )
+
+    # adding nan value in all columns of the selected section : for eg, in here every values in filtered_acceleration is nan values!
+    df["filtered_acceleration"] = np.nan
+
+    # df.loc[row, column]
+    df.loc[
+        df["linear_acceleration"].notna(),
+        "filtered_acceleration"
+    ] = filtered_acceleration
